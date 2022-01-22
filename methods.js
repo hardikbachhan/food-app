@@ -38,7 +38,16 @@ userRouter
 
 userRouter
 .route("/:id")     // final route = /user/1
-.get(getUserById)
+.get(getUserById) 
+
+// Miniapp for /auth
+const authRouter = express.Router();
+app.use("/auth", authRouter)
+
+authRouter
+.route("/signup")
+.get(getSignUp)
+.post(postSignUp)
 
 // get request
 // app.get("/user/", getUser);
@@ -113,4 +122,14 @@ function getUserById(req, res){
         message: "user id validated",
         data: obj
     });
+}
+
+// Sign Up functions
+
+function getSignUp(req, res){
+  res.sendFile("\\public\\index.html", {root: __dirname})
+}
+
+function postSignUp(req, res){
+
 }
