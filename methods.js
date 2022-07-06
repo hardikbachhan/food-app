@@ -3,51 +3,55 @@ const express = require("express");
 const app = express();
 
 // ears of server
-app.listen(3000);
+// app.listen(3000, () => {
+//     console.log("Methods file running on Port 3000.");
+// });
 
 // middleware function->works on post, converts incoming frontend data to json
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // users array for /users
 let users = [
-  {
-    id: 1,
-    name: "Hardik",
-  },
-  {
-    id: 2,
-    name: "Nikhil",
-  },
-  {
-    id: 3,
-    name: "Abhinav",
-  },
+    {
+        id: 1,
+        name: "Hardik",
+    },
+    {
+        id: 2,
+        name: "Nikhil",
+    },
+    {
+        id: 3,
+        name: "Abhinav",
+    },
 ];
 
 // MiniApp for /user
-const userRouter = express.Router();  // creating instance of Router
+const userRouter = express.Router(); // creating instance of Router
 // base route, router to use
 app.use("/user", userRouter);
 
 userRouter
-.route("/")     // final route after base route eg.) /user/
-.get(getUser)
-.post(postUser)
-.patch(updateUser)
-.delete(deleteUser)
+    .route("/") // final route after base route eg.) /user/
+    .get(getUser)
+    .post(postUser)
+    .patch(updateUser)
+    .delete(deleteUser);
 
 userRouter
-.route("/:id")     // final route = /user/1
-.get(getUserById) 
+    .route("/:id") // final route = /user/1
+    .get(getUserById);
 
 // Miniapp for /auth
 const authRouter = express.Router();
-app.use("/auth", authRouter)
+// base route
+app.use("/auth", authRouter);
 
 authRouter
-.route("/signup")
-.get(getSignUp)
-.post(postSignUp)
+    .route("/signup") // matching route
+    .get(getSignUp)
+    .post(postSignUp);
 
 // get request
 // app.get("/user/", getUser);
@@ -75,61 +79,68 @@ authRouter
 // })
 
 function getUser(req, res) {
-//   console.log(req.params.username);
-//   res.json(req.params);
-  res.send(users);
+    //   console.log(req.params.username);
+    //   res.json(req.params);
+    res.send(users);
 }
 
 function postUser(req, res) {
-  console.log(req.body);
-  users = req.body;
-  res.json({
-    message: "message received successfully",
-    user: req.body,
-  });
+    console.log(req.body);
+    users = req.body;
+    res.json({
+        message: "message received successfully",
+        user: req.body,
+    });
 }
 
 function updateUser(req, res) {
-  console.log("req.body -> ", req.body);
-  // update data in users object
-  const dataToBeUpdated = req.body;
-  for (key in dataToBeUpdated) {
-    users[key] = dataToBeUpdated[key];
-  }
+    console.log("req.body -> ", req.body);
+    // update data in users object
+    const dataToBeUpdated = req.body;
+    for (key in dataToBeUpdated) {
+        users[key] = dataToBeUpdated[key];
+    }
 
-  res.json({
-    message: "data updated successfully",
-  });
+    res.json({
+        message: "data updated successfully",
+    });
 }
 
 function deleteUser(req, res) {
-  users = {};
-  res.json({
-    message: "data has been deleted",
-  });
+    users = {};
+    res.json({
+        message: "data has been deleted",
+    });
 }
 
-function getUserById(req, res){
+function getUserById(req, res) {
     console.log(req.params.id);
-    let paramId = req.params.id//parseInt(req.params.id);
-    let obj = {}
-    for (index in users){
-        if (users[index]["id"] == paramId){
-            obj = users[index]
+    let paramId = req.params.id; //parseInt(req.params.id);
+    let obj = {};
+    for (index in users) {
+        if (users[index]["id"] == paramId) {
+            obj = users[index];
         }
     }
     res.json({
         message: "user id validated",
-        data: obj
+        data: obj,
     });
 }
 
 // Sign Up functions
 
-function getSignUp(req, res){
-  res.sendFile("\\public\\index.html", {root: __dirname})
+function getSignUp(req, res) {
+    res.sendFile("/public/index.html", { root: __dirname });
 }
 
-function postSignUp(req, res){
-
+function postSignUp(req, res) {
+    let obj = req.body;
+    console.log("backend", obj);
+    res.json({
+        message: "user signed up",
+        data: obj,
+    });
 }
+
+module.exports = { userRouter, authRouter};

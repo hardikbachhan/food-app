@@ -1,6 +1,12 @@
-const express = require('express')
+const express = require('express');
+const {userRouter, authRouter} = require("./methods");
 
 const app = express()
+
+// linking user router to app.js
+app.use("/user", userRouter);
+// linking auth router to app.js
+app.use("/auth", authRouter);
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "\\views\\index.html")
