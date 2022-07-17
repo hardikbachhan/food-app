@@ -7,8 +7,8 @@ const app = express();
 //     console.log("Methods file running on Port 3000.");
 // });
 
-// middleware function->works on post, converts incoming frontend data to json
-app.use(express.json());
+// middleware function -> works on post, converts incoming frontend data to json
+app.use(express.json());  // global middleware function
 app.use(express.urlencoded({ extended: true }));
 
 // users array for /users
@@ -34,7 +34,7 @@ app.use("/user", userRouter);
 
 userRouter
     .route("/") // final route after base route eg.) /user/
-    .get(getUser)
+    .get(getUser)    // all these are path specific middleware
     .post(postUser)
     .patch(updateUser)
     .delete(deleteUser);
@@ -43,6 +43,7 @@ userRouter
     .route("/:id") // final route = /user/1
     .get(getUserById);
 
+
 // Miniapp for /auth
 const authRouter = express.Router();
 // base route
@@ -50,7 +51,7 @@ app.use("/auth", authRouter);
 
 authRouter
     .route("/signup") // matching route
-    .get(getSignUp)
+    .get(middleware1, getSignUp, middleware2)   // adding a middleware 
     .post(postSignUp);
 
 // get request
@@ -77,6 +78,8 @@ authRouter
 
 //     res.send(users)
 // })
+
+// Users CRUD functions
 
 function getUser(req, res) {
     //   console.log(req.params.username);
@@ -128,10 +131,30 @@ function getUserById(req, res) {
     });
 }
 
+// middleware functions
+
+function middleware1(req, res, next) {
+    console.log("middleware1 encountered.");
+    next();
+}
+
+function middleware2(req, res) {
+    console.log("middleware2 encountered.");
+    // next();
+    console.log("middleware2 ended req/res cycle.");
+    res.sendFile("/public/index.html", { root: __dirname });
+}
+
 // Sign Up functions
 
-function getSignUp(req, res) {
-    res.sendFile("/public/index.html", { root: __dirname });
+// function getSignUp(req, res) {
+//     res.sendFile("/public/index.html", { root: __dirname });
+// }
+
+function getSignUp(req, res, next) {
+    console.log("getSignUp called.");
+    // res.sendFile("/public/index.html", { root: __dirname });
+    next();
 }
 
 function postSignUp(req, res) {

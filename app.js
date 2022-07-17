@@ -4,9 +4,9 @@ const {userRouter, authRouter} = require("./methods");
 const app = express()
 
 // linking user router to app.js
-app.use("/user", userRouter);
+app.use("/user", userRouter);   // global middleware function
 // linking auth router to app.js
-app.use("/auth", authRouter);
+app.use("/auth", authRouter);   // global middleware function
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "\\views\\index.html")
